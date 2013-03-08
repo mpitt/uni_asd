@@ -13,12 +13,13 @@ int main() {
     }
     fin.close();
 
-    int start, now;
+    int start, now, ciclePos;
     int progress = 0, swaps = 0, price = 0;
     int cicleLength = 0, cicleSum = 0, cicleMax = 0, cicleNextMax = 0;
     while (progress < n) {
         start = now = A[progress];
-        while (now != progress && A[now] != start && A[now] > -1) {
+        ciclePos = progress;
+        while (now != (ciclePos + 1) && /* A[now - 1] != start && */ now > -1) {
             cicleLength++;
             cicleSum += now;
             if (now > cicleNextMax) {
@@ -29,18 +30,19 @@ int main() {
                     cicleNextMax = tmp;
                 }
             }
-            if (A[now] = start + 1) {
-                progress++;
-            }
-            now = A[now];
-            A[now] = -1;
+            A[ciclePos] = -1;
+            ciclePos = now - 1;
+            now = A[ciclePos];
         }
-        swaps += cicleLength - 1;
+        if (cicleLength > 1) {
+            swaps += cicleLength - 1;
+        }
         cicleLength = 0;
-        price = (2 * cicleSum) - cicleMax - cicleNextMax;
+        price += (2 * cicleSum) - cicleMax - cicleNextMax;
         cicleSum = 0;
         cicleMax = 0;
         cicleNextMax = 0;
+        progress++;
     }
 
     fout.open("output.txt", ios::out);
