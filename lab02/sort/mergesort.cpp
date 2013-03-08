@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 using namespace std;
 
 void mergesort(int* A, int b, int e);
@@ -10,8 +11,7 @@ int main() {
     fstream fin, fout;
     fin.open("input.txt", ios::in);
     fin >> n;
-    for (int i = 0; i < n; i++) {
-    }
+    for (int i = 0; i < n; i++) fin >> A[i];
     fin.close();
 
     mergesort(A, 0, n-1);
@@ -27,14 +27,13 @@ int main() {
 }
 
 void mergesort(int* A, int b, int e) {
-    if (b <= e) {
+    if (e <= b) {
         return;
     }
+    mergesort(A, b, b+(e-b-1)/2);
+    mergesort(A, b+(e-b+1)/2, e);
 
-    mergesort(A, b, (e-b-1)/2);
-    mergesort(A, (e-b+1)/2, e-b);
-
-    merge(A, b, (e-b+1)/2, e-b);
+    merge(A, b, b+(e-b+1)/2, e);
 }
 
 void merge(int* A, int b, int m, int e) {
@@ -55,7 +54,7 @@ void merge(int* A, int b, int m, int e) {
     for (; j <=e; j++) {
         R[i+j-b-m] = A[j];
     }
-    for (i = b; i < m; i++) {
+    for (i = 0; i <=e-b; i++) {
         A[i+b] = R[i];
     }
 }
