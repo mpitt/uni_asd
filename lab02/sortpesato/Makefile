@@ -1,5 +1,6 @@
-all: trovaprezzo
+all: sortpesato
 
-trovaprezzo: trovaprezzo.cpp
-	g++ trovaprezzo.cpp -o trovaprezzo
+sortpesato: sortpesato.cpp
+	g++ sortpesato.cpp -o sortpesato
+
 
