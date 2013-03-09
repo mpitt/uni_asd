@@ -13,11 +13,11 @@ int main() {
     }
     fin.close();
 
-    int start, now, ciclePos;
+    int now, ciclePos;
     int progress = 0, swaps = 0, price = 0;
     int cicleLength = 0, cicleSum = 0, cicleMin = 0;
     while (progress < n) {
-        start = now = A[progress];
+        now = A[progress];
         ciclePos = progress;
         while (now != (ciclePos + 1) && now > -1) {
             cicleLength++;
