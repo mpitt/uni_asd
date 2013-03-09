@@ -19,7 +19,7 @@ int main() {
     while (progress < n) {
         start = now = A[progress];
         ciclePos = progress;
-        while (now != (ciclePos + 1) && /* A[now - 1] != start && */ now > -1) {
+        while (now != (ciclePos + 1) && now > -1) {
             cicleLength++;
             cicleSum += now;
             if (now > cicleNextMax) {
