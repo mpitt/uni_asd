@@ -15,20 +15,15 @@ int main() {
 
     int start, now, ciclePos;
     int progress = 0, swaps = 0, price = 0;
-    int cicleLength = 0, cicleSum = 0, cicleMax = 0, cicleNextMax = 0;
+    int cicleLength = 0, cicleSum = 0, cicleMin = 0;
     while (progress < n) {
         start = now = A[progress];
         ciclePos = progress;
         while (now != (ciclePos + 1) && now > -1) {
             cicleLength++;
             cicleSum += now;
-            if (now > cicleNextMax) {
-                cicleNextMax = now;
-                if (cicleNextMax > cicleMax) {
-                    int tmp = cicleMax;
-                    cicleMax = cicleNextMax;
-                    cicleNextMax = tmp;
-                }
+            if (now < cicleMin || cicleMin == 0) {
+                cicleMin = now;
             }
             A[ciclePos] = -1;
             ciclePos = now - 1;
@@ -37,11 +32,10 @@ int main() {
         if (cicleLength > 1) {
             swaps += cicleLength - 1;
         }
+        price += cicleSum + (cicleLength - 2) * cicleMin;
         cicleLength = 0;
-        price += (2 * cicleSum) - cicleMax - cicleNextMax;
         cicleSum = 0;
-        cicleMax = 0;
-        cicleNextMax = 0;
+        cicleMin = 0;
         progress++;
     }
 
