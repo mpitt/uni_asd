@@ -32,7 +32,14 @@ int main() {
         if (cicleLength > 1) {
             swaps += cicleLength - 1;
         }
-        price += cicleSum + (cicleLength - 2) * cicleMin;
+        if(cicleLength>3){
+            if(cicleMin>4/(cicleLength-3)+1){
+                price+=cicleLength+1;
+            }
+            else price+=(cicleLength-3)*cicleMin;
+        }
+        else price+=(cicleLength-3)*cicleMin;
+        price += cicleSum + cicleMin;
         cicleLength = 0;
         cicleSum = 0;
         cicleMin = 0;
