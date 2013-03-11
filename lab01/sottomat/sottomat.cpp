@@ -1,42 +1,33 @@
 #include <fstream>
-
+#include <iostream>
 using namespace std;
-
-int A[2000][2000];
-int r, c;
-int h[2000][2000];
-int m;
-
-int main() {
-    fstream fin, fout;
-
-    fin.open("input.txt", ios::in);
-    fin >> r >> c;
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            fin >> A[i][j];
+int r,c;
+//Array dichiarato con la dimensione massima
+int a[4000000];
+int main(){
+    int max, parz, temp, inv, n;
+    ifstream in("input.txt");
+    in>>r>>c;
+    n = inv=(r<c) ? r : c;
+    for(int i=0;i<r;i++){
+        for(int j=0; j<c;j++){
+            in>> (inv ? a[j*n+i] : a[i*n+j]);
         }
     }
-    fin.close();
-
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            h[i][j] = max(h[i][j] + A[i][j], 0);
-            my[j] = max(my[j], hy[j]);
+    r = inv ? c : r;
+    c=n;
+    max = 0;
+    for(int i=0; i<c; i++){
+        for(int j=1; j<=c;j++){
+            parz = temp = 0;
+            for(int k=0; k<r;k++){
+                for(int l=i; l<j; l++) parz += a[k*n+l];
+                    parz = temp = parz > 0 ? parz : 0;
+                    max = (temp > max) ? temp : max;
+            }
         }
-        h = max(h + my[j], 0);
-        m = max(m, h);
     }
-
-    fout.open("output.txt", ios::out);
-    fout << m << endl;
-    fout.close();
-
+    ofstream out("output.txt");
+    out<<max<<'\n';
     return 0;
-}
-
-int max (int a, int b) {
-    if (a < b)
-        return b;
-    return a;
 }
