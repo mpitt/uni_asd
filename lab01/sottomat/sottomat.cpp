@@ -1,33 +1,39 @@
 #include <fstream>
 #include <iostream>
 using namespace std;
-int r,c;
-//Array dichiarato con la dimensione massima
-int a[4000000];
-int main(){
-    int max, parz, temp, inv, n;
+int main() {
+    int mx, n, inv=0;
+    int r0, c0, r, c;
     ifstream in("input.txt");
-    in>>r>>c;
-    n = inv=(r<c) ? r : c;
-    for(int i=0;i<r;i++){
-        for(int j=0; j<c;j++){
-            in>> (inv ? a[j*n+i] : a[i*n+j]);
+    in>>r0>>c0;//acquire dimensions of the matrix
+    //check if number of colons exceeds the number of rows
+    //in this case is convenient to transpose the matrix
+    if(c0<r0) inv=1;
+    c = max(c0,r0);
+    r = min(c0,r0);
+    int** a = new int*[r];
+    for (int i=0; i<r; i++) a[i] = new int[c];
+    //acquire the matrix transposing it if convenient
+    for(int i=0;i<r0;i++) {
+        for(int j=0; j<c0;j++) {
+            if(inv==1) in>>a[j][i];
+            else in>>a[i][j];
         }
     }
-    r = inv ? c : r;
-    c=n;
-    max = 0;
-    for(int i=0; i<c; i++){
-        for(int j=1; j<=c;j++){
-            parz = temp = 0;
-            for(int k=0; k<r;k++){
-                for(int l=i; l<j; l++) parz += a[k*n+l];
-                    parz = temp = parz > 0 ? parz : 0;
-                    max = (temp > max) ? temp : max;
+    mx = 0;
+    int* parz = new int[c];
+    for(int i=0; i<r; i++) {
+        for(int k=0; k<c; k++) parz[k]=0;
+        for(int j=i; j<r; j++) {
+            int temp = 0;
+            for(int k=0; k<c; k++) {
+                parz[k] += a[j][k];
+                temp = max(temp+parz[k],0);
+                mx = max(mx,temp);
             }
         }
     }
     ofstream out("output.txt");
-    out<<max<<'\n';
+    out<<mx<<'\n';
     return 0;
 }
