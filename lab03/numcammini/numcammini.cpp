@@ -8,54 +8,53 @@ using namespace std;
 
 struct node {
     vector <int> adj;
+    int dist;
+    int npath;
 };
-
-int maxpath(node graph[], int u, int dist[]) {
-    queue <int> S;
-    int cont=0;
-    S.push(u);
-    while (!S.empty()) {
-        int v= S.front();
-        S.pop();
-        int n_ad = graph[v].adj.size();
-        for (int i=0; i< n_ad; i++){
-            int x = graph[v].adj[i];
-            if(dist[x]==-1) {
-                S.push(x);
-                dist[x]=dist[v]+1;
-                cont= max(cont, dist[x]);
-            }
-        }
-    }
-
-    return cont;
-}
 
 int main() {
     fstream file;
-    int n, m, d=0;
+    int n, m, src, dst;
+    queue <int> Q;
     file.open("input.txt", ios::in);
-    file >> n >> m;
+    file >> n >> m >> src >> dst;
     node* graph = new node[n];
     int x, y;
     for (int i=0; i<m; i++) {
         file >> x >> y;
         graph[x].adj.push_back(y);
-        graph[y].adj.push_back(x);
     }
     file.close();
-    int *dist = new int[n];
     
     for (int i=0; i<n; i++) {
-        for (int j=0; j<n; j++) {
-            dist[j]=-1;
+        graph[i].dist=-1;
+        graph[i].npath=0;
+    }
+
+    graph[src].dist=0;
+    graph[src].npath=1;
+    
+    Q.push(src);
+
+    while (!Q.empty()) {
+        int v=Q.front();
+        Q.pop();
+
+        for (int i=0; i<graph[v].adj.size(); i++) {
+            int w = graph[v].adj[i];
+            if (graph[w].dist==-1) {
+                Q.push(w);
+                graph[w].dist = graph[v].dist+1;
+            }
+            if (graph[w].dist == graph[v].dist+1) {
+                graph[w].npath += graph[v].npath;
+            }
         }
-        dist[i]=0;
-        d=max(d,maxpath(graph,i,dist));
     }
 
     file.open("output.txt", ios::out);
-    file << d << endl;
+    file << graph[dst].dist << ' '
+         << graph[dst].npath << endl;
     file.close();
     return 0;
 }
