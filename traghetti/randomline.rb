@@ -7,7 +7,7 @@ end
 
 n = ARGV[0].to_i
 puts "#{n} #{n-1}"
-a = (1..n).to_a.shuffle
+a = (0..n-1).to_a.shuffle
 a.each_index do |i|
     if a[i+1] then
         puts "#{a[i]} #{a[i+1]}"
