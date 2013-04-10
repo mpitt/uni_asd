@@ -52,10 +52,10 @@ int main() {
             //aggiunge l'elemento all'inizio o alla fine a seconda che sia il primo o secondo ramo
             switch(i) {
                 case 0:
-                    rightv.push_back(u);
+                    leftv.push_back(u);
                     break;
                 case 1:
-                    leftv.push_back(u);
+                    rightv.push_back(u);
                     break;
                 default:
                     //non dovremmo arrivare qui
@@ -65,22 +65,32 @@ int main() {
             //visto che scorro il grafo mi segno anche la lunghezza
             length++;
         }
-        u = 0;
+        
+        if(leftv.empty() && i==0) {
+            u = graph[0].adj[0];
+            rightv.push_back(u);
+            graph[u].seen = true;
+            length++;
+        }
+        else {
+            u = 0;
+        }
     }
-    for (int i=0; i<rightv.size(); i++) {
-        cout << rightv[i] << ' ';
-    }
-    cout << endl;
     for (int i=0; i<leftv.size(); i++) {
         cout << leftv[i] << ' ';
     }
     cout << endl;
+    for (int i=0; i<rightv.size(); i++) {
+        cout << rightv[i] << ' ';
+    }
+    cout << endl;
 
     int index[4];
-    index[0] = length/2 - rightv.size();
-    index[1] = length/2 + 1 - rightv.size();
-    index[2] = length/4 - rightv.size();
-    index[3] = length - length/4 - rightv.size();
+    index[0] = length/2 - leftv.size();
+    index[1] = length/2 + 1 - leftv.size();
+    index[2] = length/4 - leftv.size();
+    index[3] = length - length/4 - leftv.size();
+    cout<<"Length: "<<length<<endl;
     for (int i=0; i<4; i++) {
         cout << index[i] << endl;
     }
@@ -89,13 +99,13 @@ int main() {
     
     for (int i=0; i<4; i++) {
         if (index[i]>0) {
-            fout << leftv[leftv.size() - index[i] - 1] << ' ';
+            fout << rightv[index[i] - 1] << ' ';
         }
         else if (index[i] == 0) {
             fout << 0 << ' ';
         }
         else {
-            fout << rightv[-index[i] - 1] << ' ';
+            fout << leftv[-index[i] - 1] << ' ';
         }
         if (i%2 == 1) fout << endl;
     }
