@@ -16,8 +16,9 @@ int main() {
     int n, m;
     int remove[2];
     int add[2];
-    list <int> line;
-    int lenght = 0;
+    vector <int> leftv;
+    vector <int> rightv;
+    int length = 0;
 
     //apro lo stream in entrata
     fin.open("input.txt", ios::in);
@@ -42,7 +43,6 @@ int main() {
 
     //scorre il grafo e lo mette dentro a una lista
     int u = 0;
-    line.push_front(0);
     graph[u].seen = true;
     for(int i = 0; i<2; i++) {
         while(graph[u].adj.size()>1){
@@ -52,10 +52,10 @@ int main() {
             //aggiunge l'elemento all'inizio o alla fine a seconda che sia il primo o secondo ramo
             switch(i) {
                 case 0:
-                    line.push_front(u);
+                    rightv.push_back(u);
                     break;
                 case 1:
-                    line.push_back(u);
+                    leftv.push_back(u);
                     break;
                 default:
                     //non dovremmo arrivare qui
@@ -63,17 +63,46 @@ int main() {
                     return -1;
             }
             //visto che scorro il grafo mi segno anche la lunghezza
-            lenght++;
+            length++;
         }
         u = 0;
     }
+    for (int i=0; i<rightv.size(); i++) {
+        cout << rightv[i] << ' ';
+    }
+    cout << endl;
+    for (int i=0; i<leftv.size(); i++) {
+        cout << leftv[i] << ' ';
+    }
+    cout << endl;
 
-
+    int index[4];
+    index[0] = length/2 - rightv.size();
+    index[1] = length/2 + 1 - rightv.size();
+    index[2] = length/4 - rightv.size();
+    index[3] = length - length/4 - rightv.size();
+    for (int i=0; i<4; i++) {
+        cout << index[i] << endl;
+    }
+    
+    fout.open("output.txt", ios::out);
+    
+    for (int i=0; i<4; i++) {
+        if (index[i]>0) {
+            fout << leftv[leftv.size() - index[i] - 1] << ' ';
+        }
+        else if (index[i] == 0) {
+            fout << 0 << ' ';
+        }
+        else {
+            fout << rightv[-index[i] - 1] << ' ';
+        }
+        if (i%2 == 1) fout << endl;
+    }
     /* FORMATO OUTPUT
      * nella prima riga le prime due isole che scolleghi
      * nella seconda riga le due isole che colleghi
      */
-    fout.open("output.txt", ios::out);
 
     fout.close();
 
