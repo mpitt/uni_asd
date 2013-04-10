@@ -5,10 +5,10 @@ traghetti: traghetti.cpp
 
 clean: clean_bin clean_out
 
-clean_bin: traghetti
+clean_bin:
 	rm traghetti
 
-clean_out: output.txt
+clean_out:
 	rm output.txt
 
 
