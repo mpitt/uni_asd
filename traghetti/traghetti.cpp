@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <list>
 using namespace std;
 
 struct node {
@@ -15,6 +16,8 @@ int main() {
     int n, m;
     int remove[2];
     int add[2];
+    list <int> line;
+    int lenght = 0;
 
     //apro lo stream in entrata
     fin.open("input.txt", ios::in);
@@ -33,9 +36,37 @@ int main() {
 
     //tunonhaivistoniente
     for(int i=0; i<n; i++) {
-        graph[i].seen = 0;
+        graph[i].seen = false;
     }
 
+
+    //scorre il grafo e lo mette dentro a una lista
+    int u = 0;
+    line.push_front(0);
+    graph[u].seen = true;
+    for(int i = 0; i<2; i++) {
+        while(graph[u].adj.size()>1){
+            //se vero va sul primo, se falso va sul secondo
+            u = graph[graph[u].adj[0]].seen ? graph[u].adj[1] : graph[u].adj[0];
+            graph[u].seen = true;
+            //aggiunge l'elemento all'inizio o alla fine a seconda che sia il primo o secondo ramo
+            switch(i) {
+                case 0:
+                    line.push_front(u);
+                    break;
+                case 1:
+                    line.push_back(u);
+                    break;
+                default:
+                    //non dovremmo arrivare qui
+                    cerr << "How did I ever get here?!?" << endl;
+                    return -1;
+            }
+            //visto che scorro il grafo mi segno anche la lunghezza
+            lenght++;
+        }
+        u = 0;
+    }
 
 
     /* FORMATO OUTPUT
