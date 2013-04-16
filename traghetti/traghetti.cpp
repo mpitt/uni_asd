@@ -28,7 +28,7 @@ int main() {
 	int * father = new int [n];
 	int * dist = new int [n];
 	int border[2];
-	int chuck [4];
+	int chuck [6];
 	int join[2][2];
 	int diameter, min = n, minChuck = 0;
 
@@ -61,13 +61,13 @@ int main() {
 	cout << endl;
 	*/
 
-	chuck[0] = chuck_norris(father, dist[border[1]]/2-2, border[1]);	
+	chuck[0] = chuck_norris(father, dist[border[1]]/2-3, border[1]);	
 	
-	for(int i = 1; i < 4; i++) {	
+	for(int i = 1; i < 6; i++) {	
 		chuck[i] = father[chuck[i-1]];
     }
     
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < 5; i++) {
     	diameter = spezzatino (adj, father, n, dist, border, chuck+i, join[0]);
     	if(diameter < min) {
     		min = diameter;
@@ -137,20 +137,21 @@ int bfs (vector<int> adj[], int u, int father[], int dist[]) {
 
 int spezzatino (vector<int> adj[], int father[], int n, int dist[], int border[], int breaknode[], int join[]) {
 	int end;
-	int diameter = 0;
+	int diameter = 0, maxlen = 0;
 	cout<<"ultime robe: "<<border[0]<<" "<<border[1]<<" "<<breaknode[0]<<" "<<breaknode[1]<<"\n";
 	
 	for (int i = 0; i<2; i++) {			
 		reset(father, dist, n);
-		father[breaknode[1-i]] = -2;
+		father[breaknode[i]] = -2;
 		end = bfs(adj, border[i], father, dist);
 		join[i] = chuck_norris(father, dist[end]/2, end);
 		diameter += dist[end] - dist[end]/2;
+		maxlen = max(maxlen, dist[end]);
 		cout<<"End: "<<end<<endl;
 		cout<<"Spatzle "<<dist[end] - dist[end]/2<<endl;
 	}
 	
-	return diameter+1;
+	return max(maxlen,diameter+1);
 }
 
 int chuck_norris (int father[], int distance, int start) {
