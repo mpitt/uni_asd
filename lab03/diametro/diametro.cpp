@@ -12,13 +12,13 @@ struct node {
 
 int maxpath(node graph[], int u, int dist[]) {
     queue <int> S;
-    int cont=0;
+    int cont = 0;
     S.push(u);
     while (!S.empty()) {
-        int v= S.front();
+        int v = S.front();
         S.pop();
-        int n_ad = graph[v].adj.size();
-        for (int i=0; i< n_ad; i++){
+        int numero_adiacenti = graph[v].adj.size();
+        for (int i=0; i < numero_adiacenti; i++){
             int x = graph[v].adj[i];
             if(dist[x]==-1) {
                 S.push(x);
