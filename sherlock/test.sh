@@ -9,7 +9,7 @@ ID=$2
 
 cp input/input$ID.txt input.txt
 
-timeout 2.0s time ./$COMMAND || { echo "TIMEOUT!" ; exit 1; }
+timeout 2.0s ./$COMMAND || { echo "TIMEOUT!" ; exit 1; }
 if ! diff -q output.txt output/output$ID.txt >/dev/null; then
     echo "WRONG ANSWER"
     echo "CORRECT ANSWER: $(cat output/output$ID.txt)"
