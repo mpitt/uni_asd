@@ -75,7 +75,7 @@ int main() {
     		join[1][1] = join[0][1];
     		minChuck = i;
     	}
-    	cout<<diameter<<" "<<chuck[i]<<" "<<chuck[i+1]<<" "<<join[0][0]<<" "<<join[0][1]<<endl;
+    	//cout<<diameter<<" "<<chuck[i]<<" "<<chuck[i+1]<<" "<<join[0][0]<<" "<<join[0][1]<<endl;
     }
 	
     /* FORMATO OUTPUT
@@ -138,7 +138,7 @@ int bfs (vector<int> adj[], int u, int father[], int dist[]) {
 int spezzatino (vector<int> adj[], int father[], int n, int dist[], int border[], int breaknode[], int join[]) {
 	int end;
 	int diameter = 0, maxlen = 0;
-	cout<<"ultime robe: "<<border[0]<<" "<<border[1]<<" "<<breaknode[0]<<" "<<breaknode[1]<<"\n";
+	//cout<<"ultime robe: "<<border[0]<<" "<<border[1]<<" "<<breaknode[0]<<" "<<breaknode[1]<<"\n";
 	
 	for (int i = 0; i<2; i++) {			
 		reset(father, dist, n);
@@ -147,8 +147,8 @@ int spezzatino (vector<int> adj[], int father[], int n, int dist[], int border[]
 		join[i] = chuck_norris(father, dist[end]/2, end);
 		diameter += dist[end] - dist[end]/2;
 		maxlen = max(maxlen, dist[end]);
-		cout<<"End: "<<end<<endl;
-		cout<<"Spatzle "<<dist[end] - dist[end]/2<<endl;
+		//cout<<"End: "<<end<<endl;
+		//cout<<"Spatzle "<<dist[end] - dist[end]/2<<endl;
 	}
 	
 	return max(maxlen,diameter+1);
