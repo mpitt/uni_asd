@@ -6,12 +6,12 @@ using namespace std;
 
 int fapunti(int** P, int serate, int travestimenti, int** G, int* lunghezze);
 int g(int iter, bool trav, int* finali, int serata, bool pari);
-void analizza_sera(int serata, int lun, int finale, int** G, list<int> chi, int inf);
+void analizza_sera(int serata, int lun, int finale, int** G, int* chi, int inf);
 
 int main() {
   //variabili
   fstream fin, fout;
-  int serate, istanti, travestimenti, total = 0;
+  int serate, istanti, travestimenti, maxlen = 0, total = 0;
 
   //apro lo stream in entrata
   fin.open("input.txt", ios::in);
@@ -19,10 +19,13 @@ int main() {
   //leggo i dati
   fin >> serate >> istanti >> travestimenti;
   //valore massimo
-  int bottom = serate * istanti + 1;
+  int inf = -(serate * istanti + 1);
 
   //istanzio la matrice dinamica
-  list<int>* chi = new list<int>[serate];
+  int** chi = new int*[serate];
+  for (int i = 0; i < serate; i++) {
+    chi[i] = new int[istanti];
+  }
   int* finali = new int[serate];
   int* lunghezze = new int[serate];
 
@@ -37,7 +40,7 @@ int main() {
       if (curr == temp) {
         count++;
       } else {
-        chi[i].push_back(count);
+        chi[i][lunghezze[i]] = count;
         count = 1;
         total++;
         lunghezze[i]++;
@@ -48,37 +51,30 @@ int main() {
       }
       finali[i] = (temp == 'J');
     }
-    chi[i].push_back(count);
+    chi[i][lunghezze[i]] = count;
     lunghezze[i]++;
     total++;
     count = 0;
+    maxlen = max(maxlen, lunghezze[i]);
   }
   //chiudo lo stream
   fin.close();
 
   //inizializzo la tabella dei punti
-  int ***S = new int**[total + 1];
-  for (int i = 0; i < total + 1; i++) {
-    S[i] = new int*[travestimenti + 2];
-    for (int j = 0; j < travestimenti + 2; j++) {
-      S[i][j] = new int[2];
-      S[i][j][0] = S[i][j][1] = 0; 
-    }
-  }
   int** G = new int*[serate];
   for (int i = 0; i < serate; i++) {
-    G[i] = new int[travestimenti];
-    for (int j = 0; j < travestimenti; j++) {
+    G[i] = new int[maxlen];
+    for (int j = 0; j < maxlen; j++) {
       G[i][j] = 0;
     }
   }
   for (int i = 0; i < serate; i++) {
-    analizza_sera(i, lunghezze[i], finali[i], G, chi[i], -bottom);
+    analizza_sera(i, lunghezze[i], finali[i], G, chi[i], inf);
   }
   int** P = new int*[serate + 1];
   for (int i = 0; i <= serate; i++) {
     P[i] = new int[travestimenti + 2];
-    P[i][0] = -bottom;
+    P[i][0] = inf;
   }
   for (int i = 1; i < travestimenti + 2; i++) {
     P[serate][i] = 0;
@@ -116,7 +112,7 @@ int g(int points, bool trav, int finale, bool pari) {
   }
 }
 
-void analizza_sera(int serata, int lun, int finale, int** G, list<int> chi, int inf) {
+void analizza_sera(int serata, int lun, int finale, int** G, int* chi, int inf) {
   int*** S = new int**[lun + 1];
   for (int i = 0; i <= lun; i++) {
     S[i] = new int*[lun + 2];
@@ -127,21 +123,20 @@ void analizza_sera(int serata, int lun, int finale, int** G, list<int> chi, int 
     S[i][0][0] = S[i][0][1] = inf;
   }
   bool pari = false;
-  list<int>::reverse_iterator iter = chi.rbegin();
   for (int ist = lun - 1; ist > 0; ist--) {
     for (int rim = 1; rim <= lun + 1; rim++) {
-      S[ist][rim][true] = max(S[ist + 1][rim][true] + g(*iter, true, finale, pari),
-          S[ist + 1][rim - 1][false] + g(*iter, false, finale, pari));
-      S[ist][rim][false] = max(S[ist + 1][rim][false] + g(*iter, false, finale, pari),
-          S[ist + 1][rim - 1][true] + g(*iter, true, finale, pari));
+      S[ist][rim][true] = max(S[ist + 1][rim][true] + g(chi[ist], true, finale, pari),
+          S[ist + 1][rim - 1][false] + g(chi[ist], false, finale, pari));
+      S[ist][rim][false] = max(S[ist + 1][rim][false] + g(chi[ist], false, finale, pari),
+          S[ist + 1][rim - 1][true] + g(chi[ist], true, finale, pari));
     } 
-    iter++;
     pari = !pari;
   } 
   for (int rim = 1; rim <= lun; rim++) {
     int m = 0;
-    m = max(m, S[1][rim][true] + g(*iter, true, finale, pari));
-    m = max(m, S[1][rim][false] + g(*iter, false, finale, pari));
+    m = max(m, S[1][rim][true] + g(chi[0], true, finale, pari));
+    m = max(m, S[1][rim][false] + g(chi[0], false, finale, pari));
     G[serata][rim - 1] = m;
   }
+  delete S;
 }
