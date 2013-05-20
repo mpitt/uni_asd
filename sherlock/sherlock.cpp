@@ -6,7 +6,7 @@ using namespace std;
 
 int fapunti(int** P, int serate, int travestimenti, int** G, int* lunghezze);
 int g(int iter, bool trav, int* finali, int serata, bool pari);
-void analizza_sera(int serata, int lun, int finale, int** G, int* chi, int inf);
+void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf);
 
 int main() {
   //variabili
@@ -112,19 +112,19 @@ int g(int points, bool trav, int finale, bool pari) {
   }
 }
 
-void analizza_sera(int serata, int lun, int finale, int** G, int* chi, int inf) {
-  int*** S = new int**[lun + 1];
-  for (int i = 0; i <= lun; i++) {
-    S[i] = new int*[lun + 2];
-    for (int j = 0; j < lun + 2; j++) {
+void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf) {
+  int*** S = new int**[len + 1];
+  for (int i = 0; i <= len; i++) {
+    S[i] = new int*[len + 2];
+    for (int j = 0; j < len + 2; j++) {
       S[i][j] = new int[2];
       S[i][j][0] = S[i][j][1] = 0; 
     }
     S[i][0][0] = S[i][0][1] = inf;
   }
   bool pari = false;
-  for (int ist = lun - 1; ist > 0; ist--) {
-    for (int rim = 1; rim <= lun + 1; rim++) {
+  for (int ist = len - 1; ist > 0; ist--) {
+    for (int rim = 1; rim <= len + 1; rim++) {
       S[ist][rim][true] = max(S[ist + 1][rim][true] + g(chi[ist], true, finale, pari),
           S[ist + 1][rim - 1][false] + g(chi[ist], false, finale, pari));
       S[ist][rim][false] = max(S[ist + 1][rim][false] + g(chi[ist], false, finale, pari),
@@ -132,7 +132,7 @@ void analizza_sera(int serata, int lun, int finale, int** G, int* chi, int inf) 
     } 
     pari = !pari;
   } 
-  for (int rim = 1; rim <= lun; rim++) {
+  for (int rim = 1; rim <= len; rim++) {
     int m = 0;
     m = max(m, S[1][rim][true] + g(chi[0], true, finale, pari));
     m = max(m, S[1][rim][false] + g(chi[0], false, finale, pari));
