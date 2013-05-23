@@ -1,12 +1,10 @@
 #include <fstream>
-#include <iostream>
-#include <list>
 
 using namespace std;
 
-int fapunti(int** P, int serate, int travestimenti, int** G, int* lunghezze);
+int fapunti(int** P, int serate, int travestimenti, int** G, int* lunghezze, int available);
 int g(int iter, bool trav, int* finali, int serata, bool pari);
-void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf);
+void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf, int available);
 
 int main() {
   //variabili
@@ -57,6 +55,7 @@ int main() {
     count = 0;
     maxlen = max(maxlen, lunghezze[i]);
   }
+  int available = max(travestimenti - serate + 1, 1);
   //chiudo lo stream
   fin.close();
 
@@ -69,7 +68,7 @@ int main() {
     }
   }
   for (int i = 0; i < serate; i++) {
-    analizza_sera(i, lunghezze[i], finali[i], G, chi[i], inf);
+    analizza_sera(i, lunghezze[i], finali[i], G, chi[i], inf, available);
   }
   int** P = new int*[serate + 1];
   for (int i = 0; i <= serate; i++) {
@@ -84,22 +83,25 @@ int main() {
    * Sherlock può avere il travestimento adatto
    */
 fout.open("output.txt", ios::out);
-fout << fapunti(P, serate, travestimenti, G, lunghezze) << endl;
+fout << fapunti(P, serate, travestimenti, G, lunghezze, available) << endl;
 fout.close();
 
 return 0;
 }
 
 //magica funzione risolvi i nostri problemi, amen
-int fapunti(int** P, int serate, int travestimenti, int** G, int* lunghezze) {
+int fapunti(int** P, int serate, int travestimenti, int** G, int* lunghezze, int available) {
+  available += serate - 1;
   for (int s = serate - 1; s >= 0; s--) {
+    int trav = min(available, lunghezze[s]);
     for (int rim = 1; rim <= travestimenti + 1; rim++) {
       int m = P[s +1][rim];
-      for (int k = 1; k < rim && k <=  lunghezze[s]; k++) {
+      for (int k = 1; k < rim && k <= trav; k++) {
         m = max(m, P[s + 1][rim - k] + G[s][k - 1]);
       }
       P[s][rim] = m;
     }
+    available--;
   }
   return P[0][travestimenti + 1];
 }
@@ -112,7 +114,7 @@ int g(int points, bool trav, int finale, bool pari) {
   }
 }
 
-void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf) {
+void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf, int available) {
   int*** S = new int**[len + 1];
   for (int i = 0; i <= len; i++) {
     S[i] = new int*[len + 2];
@@ -123,8 +125,9 @@ void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf) 
     S[i][0][0] = S[i][0][1] = inf;
   }
   bool pari = false;
+  available = min(available, len);
   for (int ist = len - 1; ist > 0; ist--) {
-    for (int rim = 1; rim <= len + 1; rim++) {
+    for (int rim = 1; rim <= available + 1; rim++) {
       S[ist][rim][true] = max(S[ist + 1][rim][true] + g(chi[ist], true, finale, pari),
           S[ist + 1][rim - 1][false] + g(chi[ist], false, finale, pari));
       S[ist][rim][false] = max(S[ist + 1][rim][false] + g(chi[ist], false, finale, pari),
@@ -132,7 +135,7 @@ void analizza_sera(int serata, int len, int finale, int** G, int* chi, int inf) 
     } 
     pari = !pari;
   } 
-  for (int rim = 1; rim <= len; rim++) {
+  for (int rim = 1; rim <= available; rim++) {
     int m = 0;
     m = max(m, S[1][rim][true] + g(chi[0], true, finale, pari));
     m = max(m, S[1][rim][false] + g(chi[0], false, finale, pari));
